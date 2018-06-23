@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="media/rb-logo.png" width="30%"><br/>RetailBox
+  <img src="media/rb-logo.png" width="20%"><br/>RetailBox
 </h1>
 
 <h4 align="center">
@@ -12,8 +12,8 @@ RetailBox
 
 ## Algorithms Used
 
-* Matrix Factorization
-
+* SGD Matrix Factorization
+* Bayesian Personalized Ranking
 
 ## Install
 
@@ -23,6 +23,15 @@ RetailBox
 
 
 ## Usage
+
+
+## References
+
+* [Matrix Factorization Techniques for Recommender Systems](https://datajobs.com/data-science-repo/Recommender-Systems-[Netflix].pdf)
+* [Matrix Factorization For Recommender Systems](https://joyceho.github.io/cs584_s16/slides/mf-16.pdf)
+* [BPR: Bayesian Personalized Ranking from Implicit Feedback](https://arxiv.org/pdf/1205.2618.pdf)
+* [Based Subreddit Recommender System](https://cole-maclean.github.io/blog/RNN-Based-Subreddit-Recommender-System/)
+* [A Recurrent Neural Network Based Recommendation System](https://cs224d.stanford.edu/reports/LiuSingh.pdf)
 
 
 ## Team
