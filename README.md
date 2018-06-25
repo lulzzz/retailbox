@@ -24,7 +24,9 @@ Here are the features of the dataset:
 * CustomerID
 * Country
 
+## Training/Test Split
 
+The way we split the data was by time.
 
 ## Algorithms Used
 
@@ -48,8 +50,15 @@ The RNN performed the best.
 * We don't know what the user doesn't like.
 * Matrix Factorization does not take
 
-## Install
+## Context of Recommendation Scenario
 
+In this recommender system, the context we used can be seen by the diagram below. Our main model to generate recommendations for a user and if a user bought an item our system recommended, then it was a success!
+
+<p align="center">
+  <img src="https://i.imgur.com/5WegTbB.png" width=500>
+</p>
+
+## Installation
 
 ## CLI
 
