@@ -3,20 +3,24 @@
 </h1>
 
 <h4 align="center">
-  🛒 Machine Learning eCommerce Recommender System
+  🛍️ Machine Learning eCommerce Recommender System
 </h4>
 
 ## Overview
 
 RetailBox 
 
+## Dataset
+
+
+
 ## Algorithms Used
 
 * SGD Matrix Factorization
 * Bayesian Personalized Ranking
+* Recurrent Neural Networks
 
-## Install
-
+## Instal
 
 
 ## CLI
