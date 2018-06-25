@@ -8,19 +8,47 @@
 
 ## Overview
 
-RetailBox 
+RetailBox is a recommender system that uses machine learning to make recommendations based off of a user's past purchase history. This project was inspired by Amazon and their recommender system techology.
 
 ## Dataset
+
+The dataset we used is the [UCI Online Retail Dataset](http://archive.ics.uci.edu/ml/datasets/online+retail). This dataset has 25900 transactions, with each transaction containing 20 features, and these transactions were made by 4,300 users.
+
+Here are the features of the dataset:
+
+* Invoice No
+* Stock Code
+* Description
+* Quantity
+* UnitPrice
+* CustomerID
+* Country
 
 
 
 ## Algorithms Used
 
 * SGD Matrix Factorization
-* Bayesian Personalized Ranking
 * Recurrent Neural Networks
 
-## Instal
+## Performance Measures
+
+We set a baseline measurement for our recommender system, and then compared it to a recommender system that used matrix factorization and RNNs.
+Baseline
+
+SGD Matrix Factorization
+
+RNN
+
+The RNN performed the best.
+
+## Challenge and Workarounds
+
+* Dataset had several rows of a single transactions
+* We don't know what the user doesn't like.
+* Matrix Factorization does not take
+
+## Install
 
 
 ## CLI
