@@ -13,7 +13,7 @@ def group_indptr(df):
     indptr = np.append(indptr, len(df)).astype('int32')
     return indptr
 
-def baseline(df):
+def baseline(df, get_base):
     df_train = df[df.invoicedate < '2011-10-09']
     df_train = df_train.reset_index(drop=True)
     df_val = df[(df.invoicedate >= '2011-10-09') & 
@@ -28,12 +28,21 @@ def baseline(df):
     val_indptr = group_indptr(df_val)
     num_groups = len(val_indptr) - 1
     baseline = np.tile(top, num_groups).reshape(-1, 5)
+
+    # Stop early and return baseline, otherwise return precision of baseline
+    if get_base == True:
+        return baseline
     
     val_items = df_val.stockcode.values
     prec = p.precision(val_indptr, val_items, baseline)
-    print(prec)
     return prec
+    
 
 def runner():
     df = pre.process_data()
-    baseline(df)
+    print(baseline(df, False))
+    print(baseline(df, True))
+
+runner()
+
+
