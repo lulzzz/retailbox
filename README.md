@@ -55,7 +55,7 @@ The RNN performed the best.
 In this recommender system, the context we used can be seen by the diagram below. Our main model to generate recommendations for a user and if a user bought an item our system recommended, then it was a success!
 
 <p align="center">
-  <img src="https://i.imgur.com/5WegTbB.png" width=500>
+  <img src="https://i.imgur.com/5WegTbB.png">
 </p>
 
 ## Installation
