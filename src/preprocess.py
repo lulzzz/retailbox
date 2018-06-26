@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
+import pickle
+import numpy as np
+import os.path
 
 def process_data():
     # Read Data, create dataframe
-    df = pd.read_excel('../data/raw/Online Retail.xlsx')
-
-    # # Save df into pickle file
-    with open('../data/processed/df_retail.bin', 'wb') as f_out:
-        pickle.dump(df, f_out)
-
+    file_path = '../data/processed/df_retail.bin'
+    df = None
+    if os.path.exists(file_path) == False:
+        df = pd.read_excel('../data/raw/Online Retail.xlsx')
+        # # Save df into pickle file
+        with open('../data/processed/df_retail.bin', 'wb') as f_out:
+            pickle.dump(df, f_out)
+    
     with open('../data/processed/df_retail.bin', 'rb') as f_in:
         df = pickle.load(f_in)
 
