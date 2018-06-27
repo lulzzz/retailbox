@@ -26,23 +26,25 @@ Here are the features of the dataset:
 
 ## Training/Test Split
 
-The way we split the data was by time.
+The way we split the data was by time. In this scenario, our system makes recommendations based on implicit user data from the past so this is how we split our data.
+
+
 
 ## Algorithms Used
 
-* SGD Matrix Factorization
+* Matrix Factorization
 * Recurrent Neural Networks
 
 ## Performance Measures
 
 We set a baseline measurement for our recommender system, and then compared it to a recommender system that used matrix factorization and RNNs.
+
 Baseline
+ALS
+SGD Matrix Factorization using Log Loss Objective Function
+SGD Matrix Factorization using BPR Objective Function
+Recurrent Neural Network
 
-SGD Matrix Factorization
-
-RNN
-
-The RNN performed the best.
 
 ## Challenge and Workarounds
 
@@ -76,8 +78,8 @@ In this recommender system, the context we used can be seen by the diagram below
 * [BPR: Bayesian Personalized Ranking from Implicit Feedback](https://arxiv.org/pdf/1205.2618.pdf)
 * [Based Subreddit Recommender System](https://cole-maclean.github.io/blog/RNN-Based-Subreddit-Recommender-System/)
 * [A Recurrent Neural Network Based Recommendation System](https://cs224d.stanford.edu/reports/LiuSingh.pdf)
-
-
+* [BPR in Python](https://github.com/gamboviol/bpr)
+* [SGD and ALS in collaborative filtering - CrossValidated Thread](https://stats.stackexchange.com/questions/201279/comparison-of-sgd-and-als-in-collaborative-filtering)
 ## Team
 
 Coded by:

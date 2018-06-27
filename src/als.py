@@ -51,4 +51,4 @@ def als(df_train, df_val, baseline):
 
 def runner():
     df = pre.process_data()
-    als
+    
