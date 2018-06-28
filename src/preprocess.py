@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 import os.path
 
+# Preprocesses code, and returns a dataframe of clean data
 def process_data():
     # Read Data, create dataframe
     file_path = '../data/processed/df_retail.bin'
@@ -29,3 +30,17 @@ def process_data():
     df.stockcode = stockcode_values.map(stockcodes).astype('int32')
 
     return df
+
+# Splits up the preprocessed code into train/test/validation splits
+def split_data(df):
+    df_train = df[df.invoicedate < '2011-10-09']
+    df_train = df_train.reset_index(drop=True)
+    df_val = df[(df.invoicedate >= '2011-10-09') & 
+                (df.invoicedate <= '2011-11-09') ]
+    
+    df_val = df_val.reset_index(drop=True)
+    df_test = df[df.invoicedate >= '2011-11-09']
+    df_test = df_test.reset_index(drop=True)
+
+    return [df_train, df_test, df_val]
+
