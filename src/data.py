@@ -6,7 +6,7 @@ import pickle
 import numpy as np
 import os.path
 
-from output import printGreen, printRed
+from output import printGreen, printRed, display_customer_information
 
 # Store CustomerIDs
 customer_id = {}
@@ -91,11 +91,88 @@ def split_data(df, status):
 
 def validate_customer_id(customer_id):
     # Check if input is in range or is valid type
+    if not (isinstance(customer_id, int) and customer_id >= 0 and customer_id <= 4338):
+        printRed('✘ Invalid value for customer ID: "' + str(customer_id) + '"')
+        printRed('✘ Input is not a valid integer between [0, 4338]')
+        sys.exit(1)
+    return 0
+
+def validate_length(length):
+    # Check whether the list length is valid
+    if not (isinstance(length, int) and length >= 1 and length <= 4339):
+        printRed('Invalid value for list length: "' + str(length) + '"')
+        printRed('Input is not a valid integer between [1, 4339]')
+        sys.exit(1)
+    return 0
+
+def validate_recommendations(recommendations_number):
+    if not (isinstance(recommendations_number, int) and recommendations_number >= 1 and recommendations_number <= 5):
+        printRed('Invalid value for recommendations number: "' + str(recommendations_number) + '"')
+        printRed('Input is not a valid integer between [1, 5]')
+        sys.exit(1)
+    return 0
+
+def validate_input(customer_id, recommendations_number):
+    validate_customer_id(customer_id)
+    validate_recommendations(recommendations_number)
+    return 0
+
+def search_customer(customer_id, df, table):
+    # Validate user customer_id input
+    validate_customer_id(customer_id)
     
+    # Find associated customer from input through lookup table
+    customer_id_r = table[customer_id]
+
+    customer_df = df.loc[df['customerid'] == customer_id_r]
+    amount_spent = 0.00
+    list_of_items = []
+    country = ""
+    len(customer_df)
+
+    for index, row in customer_df.iterrows():
+        amount_spent += row['unitprice']
+        list_of_items.append(row['description'])
+        if country == "":
+            country = row['country']
     
+    # Display Customer Information Search result
+    display_customer_information(customer_id=customer_id_r,
+                                 country=country,
+                                 items=list_of_items,
+                                 amount_spent=amount_spent)
+    return 0
+
+def list_customers(length, df, table):
+    validate_length(length)
+    for i in range(length):
+        customer_id_r = table[i]
+        customer_df = df.loc[df['customerid'] == customer_id_r]
+        amount_spent = 0.00
+        list_of_items = []
+        country = ""
+        len(customer_df)
+        for index, row in customer_df.iterrows():
+            amount_spent += row['unitprice']
+            list_of_items.append(row['description'])
+            if country == "":
+                country = row['country']
+        
+        # Display Customer
+        display_customer_information(customer_id=customer_id_r,
+                                country=country,
+                                items=list_of_items,
+                                amount_spent=amount_spent)
+    return 0
+
 
 def main():
-    process_data(status=True)
-    customer_id_search = invert_dict(customer_id)
+    df = process_data(status=True)
+    customer_id_search = invert_dict(customer_id) # searchable customer table
+    # search_customer(3, df, customer_id_search)
+    # list_customers(50, df, customer_id_search)
 
-main()
+
+if __name__ == '__main__':
+    main()
+

@@ -7,6 +7,9 @@ import os.path
 # CustomerID Storage
 
 ## DEPRECIATED
+## DEPRECIATED
+## DEPRECIATED
+
 
 
 customer_id = {}
@@ -41,7 +44,6 @@ def process_data():
 
     i = 0
     counter = 0
-
     while counter != 532620:
         #     print(df['CustomerID'][x])
         if df['customerid'][counter] not in user_id and df['customerid'][counter] != -1 and df['customerid'][counter] != None:
@@ -50,10 +52,7 @@ def process_data():
             i += 1
         #print(counter)
         counter += 1
-
-
-
-
+    
     return df
 
 # Splits up the preprocessed code into train/test/validation splits
