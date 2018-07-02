@@ -2,7 +2,7 @@
 import re
 
 from colorama import init
-from termcolor import color
+from termcolor import colored
 
 init() # Termcolor support for win32
 
@@ -11,16 +11,16 @@ init() # Termcolor support for win32
 #
 
 def printGreen(msg):
-    print(color(msg, 'green'))
+    print(colored(msg, 'green'))
 
 def printYellow(msg):
-    print(color(msg, 'yellow'))
+    print(colored(msg, 'yellow'))
 
 def printMagenta(msg):
-    print(color(msg, 'magenta'))
+    print(colored(msg, 'magenta'))
 
 def printRed(msg):
-    print(color(msg, 'red'))
+    print(colored(msg, 'red'))
 
 
 #
@@ -32,7 +32,7 @@ help_message = '''
 
   Usage
     $ retailbox [<options> ...]
-    
+
 '''
 
 def displayHelpMessage():

@@ -8,6 +8,14 @@ import os.path
 
 from output import printGreen, printRed
 
+# Store CustomerIDs
+customer_id = {}
+customer_id_search = {}
+
+def invert_dict(c):
+    inv = {v: k for k, v in c.items()}
+    return inv
+
 def process_data(status):
     start = time.time()
     
@@ -46,6 +54,20 @@ def process_data(status):
     if status:
        printGreen('✔ Processed Data\t\t{0:.1f}s'.format(time.time() - start)) 
 
+    # Store Customer IDs in a table
+    start = time.time()
+    i = 0
+    counter = 0
+    while counter != 532620:
+        if df['customerid'][counter] not in customer_id and df['customerid'][counter] != -1 and df['customerid'][counter] != None:
+            customer_id[df['customerid'][counter]] = i
+            i += 1
+        counter += 1
+    
+    # Display process status
+    if status:
+       printGreen('✔ Stored Customer Data in Table\t\t{0:.1f}s'.format(time.time() - start))
+
     return df
 
 # Splits up the preprocessed code into train/test/validation splits
@@ -67,6 +89,13 @@ def split_data(df, status):
     # Pack data
     return [df_train, df_test, df_val]
 
-def validateUserID(userID):
-    # Check if input userID is valid
+def validate_customer_id(customer_id):
+    # Check if input is in range or is valid type
     
+    
+
+def main():
+    process_data(status=True)
+    customer_id_search = invert_dict(customer_id)
+
+main()
