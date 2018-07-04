@@ -55,7 +55,7 @@ amount_spent    (float)  cost of all items in list
 def display_customer_information(customer_id, country, items, amount_spent):
     # Print Customer ID
     print('\n')
-    print(colored('> Customer_ID: ' + str(customer_id), 'green'))
+    print(colored('❯ Customer_ID: ' + str(customer_id), 'green'))
 
     # Print Customer's Country of Origin
     print(colored('• Country: ' + country, 'green'))
