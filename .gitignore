@@ -1,3 +1,18 @@
-**.ipynb_checkpoints
+# Logs
+*.log
+
+# Draft/Experimental Notebooks
 notebooks
 
+# OS Files
+.DS_Store
+
+# Compiled
+build
+*.pyc
+__pycache__
+*.egg-info
+
+# Dependencies
+**.ipynb_checkpoints
+.cache
