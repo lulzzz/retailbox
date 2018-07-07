@@ -178,9 +178,7 @@ def customer_table():
 def main():
     df = process_data(status=True)
     customer_table()
-
-    # customer_id_search = invert_dict(customer_id) # searchable customer table
-
+    
     # search_customer(3, df, customer_id_search)
     # list_customers(50, df, customer_id_search)
 

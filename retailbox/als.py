@@ -1,12 +1,13 @@
 from implicit.als import AlternatingLeastSquares
 import baseline as base
+import pandas as pd
 import precision as p
-import preprocess as pre
+import data as d
 import numpy as np
 import scipy.sparse as sp
 from tqdm import tqdm
 
-def als(df_train, df_val, baseline):
+def als_precision(df_train, df_val, baseline):
     # Constructing user-item matrix X, translate both
     # users and items into IDs, so we can map each user to a row of x
     # and an iterm to a column of X
@@ -40,15 +41,30 @@ def als(df_train, df_val, baseline):
     als_U = als.user_factors
     als_I = als.item_factors
     
-    imp_baseline = baseline
+    imp_baseline = baseline.copy()
+
     pred_all = als_U[uid_val].dot(als_I.T)
     top_val = (-pred_all).argsort(axis=1)[:, :5]
+    val_indptr = base.group_indptr(df_val)
+    val_items = df_val.stockcode.values
+
     imp_baseline[known_mask] = top_val
     prec = p.precision(val_indptr, val_items, imp_baseline)
-    print(prec)
     return prec
 
 
-def runner():
-    df = pre.process_data()
-    
+def main():
+    df = pd.read_pickle('../data/final/df_final.pkl')
+    data = d.split_data(df, True)
+
+    data_train = data[0]
+    data_test = data[1]
+    data_val = data[2]
+
+    b = base.baseline(df, False)
+
+    print(als_precision(data_train, data_val, b))
+
+
+if __name__ == '__main__':
+    main()
