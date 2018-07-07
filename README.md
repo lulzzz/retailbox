@@ -81,6 +81,7 @@ In this recommender system, the context we used can be seen by the diagram below
 * [BPR in Python](https://github.com/gamboviol/bpr)
 * [SGD and ALS in collaborative filtering - CrossValidated Thread](https://stats.stackexchange.com/questions/201279/comparison-of-sgd-and-als-in-collaborative-filtering)
 * [Python Pickle Module for saving Objects by serialization](https://pythonprogramming.net/python-pickle-module-save-objects-serialization/)
+* [Python Packaging from Init to Deploy](https://www.youtube.com/watch?v=4fzAMdLKC5k)
 
 ## Team
 
