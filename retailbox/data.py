@@ -186,10 +186,10 @@ def main():
     table_file = open('../data/final/df_customer_table.pkl', "rb")
     customer_table = pickle.load(table_file)
     
-    search_customer(3, df, customer_table)
+    # search_customer(3, df, customer_table)
 
 
-    # list_customers(10, df, customer_table)
+    list_customers(10, df, customer_table)
 
 if __name__ == '__main__':
     main()

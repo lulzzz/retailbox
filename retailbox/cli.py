@@ -48,10 +48,11 @@ def main(customer, recommend, customer_information, help, version, search, list)
             df = pd.read_pickle('../data/final/df_final.pkl') 
             table_pickle_file = open('../data/final/df_customer_table.pkl', "rb")
             customer_table = pickle.load(table_pickle_file)
+            table_pickle_file.close()
 
             if (search):
                 # Search for a Customer
-                customer_search_id = click.prompt('❯ Please enter a Customer ID [1-4339]: ', type=int)
+                customer_search_id = click.prompt('❯ Please enter a Customer ID [0-4339]: ', type=int)
                 search_customer(customer_search_id, df, customer_table)
                 
             else:
