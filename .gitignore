@@ -2,7 +2,7 @@
 *.log
 
 # Draft/Experimental Notebooks
-notebooks
+notebooks_test
 
 # OS Files
 .DS_Store

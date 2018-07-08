@@ -28,8 +28,6 @@ Here are the features of the dataset:
 
 The way we split the data was by time. In this scenario, our system makes recommendations based on implicit user data from the past so this is how we split our data.
 
-
-
 ## Algorithms Used
 
 * Matrix Factorization
@@ -69,6 +67,9 @@ In this recommender system, the context we used can be seen by the diagram below
 
 ## API
 
+## Tools Used
+
+* Tensorflow
 
 
 ## References

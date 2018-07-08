@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import pickle
 
 from colorama import init
 from termcolor import colored
@@ -54,7 +55,15 @@ amount_spent    (float)
 def display_customer_information(customer_id, country, items, amount_spent):
     # Print Customer ID
     print('\n')
-    print(colored('❯ Customer_ID: ' + str(customer_id), 'green'))
+    # customer_id_short
+    
+    # Load Customer table for display
+    table_file = open('../data/final/df_customer_table_long.pkl', "rb")
+    customer_table = pickle.load(table_file)
+    customer_id_display = customer_table[customer_id]
+    table_file.close()
+    
+    print(colored('❯ Customer_ID: ' + str(customer_id_display), 'green'))
 
     # Print Customer's Country of Origin
     print(colored('• Country: ' + country, 'green'))

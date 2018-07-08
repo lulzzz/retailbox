@@ -64,6 +64,11 @@ def process_data(status):
             i += 1
         counter += 1
     
+    # Save Customer ID Table
+    customer_id_storage = open('../data/final/df_customer_table_long.pkl', "wb")
+    pickle.dump(customer_id, customer_id_storage)
+    customer_id_storage.close()
+    
     # Display process status
     if status:
        printGreen('✔ Stored Customer Data in Table\t\t{0:.1f}s'.format(time.time() - start))
@@ -168,6 +173,7 @@ def list_customers(length, df, table):
                                 amount_spent=amount_spent)
     return 0
 
+# Stores Customer table as pickle file
 def customer_table():
     customer_id_search = invert_dict(customer_id)
     table_storage = open('../data/final/df_customer_table.pkl', "wb")
@@ -177,10 +183,13 @@ def customer_table():
 
 def main():
     df = process_data(status=True)
-    customer_table()
+    table_file = open('../data/final/df_customer_table.pkl', "rb")
+    customer_table = pickle.load(table_file)
     
-    # search_customer(3, df, customer_id_search)
-    # list_customers(50, df, customer_id_search)
+    search_customer(3, df, customer_table)
+
+
+    # list_customers(10, df, customer_table)
 
 if __name__ == '__main__':
     main()
