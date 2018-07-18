@@ -5,8 +5,13 @@ import pandas as pd
 import pickle
 import numpy as np
 import os.path
+import scipy.sparse as sparse
+from scipy.sparse.linalg import spsolve
+import random
+import implicit
 
 from output import printGreen, printRed, display_customer_information
+from implicit_als import implicit_weighted_als
 
 # Store CustomerIDs
 customer_id = {}
@@ -16,6 +21,13 @@ def invert_dict(c):
     inv = {v: k for k, v in c.items()}
     return inv
 
+#
+# Build out Customer Tables and clean dataframe
+#
+# Dataframe that is built will be used for searching for customers via 
+# id's, and be used to provide extended application functionality
+# that has to do with basic searching functionality of customers and items
+#
 def process_data(status):
     start = time.time()
     
@@ -78,7 +90,74 @@ def process_data(status):
 
     return df
 
+#
+# Build out item tables, and product matrices
+#
+# This function mainly gets the data processed ready to be fed
+# into the recommender system 
+#
+def preprocess_data_rec_engine(status):
+    
+    # Load Data
+    data = pd.read_excel('../data/raw/Online Retail.xlsx')
+
+    # Get rid of rows that don't have Customer ID's
+    cleaned_data = data.loc[pd.isnull(data.CustomerID) == False]
+
+    # Lookup table for item ID, will be used to search for item ID and return description
+    item_table = cleaned_data[['StockCode', 'Description']].drop_duplicates()
+    item_table['StockCode'] = item_table.StockCode.astype(str)
+
+    # Get rid of data that isn't needed
+    cleaned_data['CustomerID'] = cleaned_data.CustomerID.astype(int)
+    cleaned_data = cleaned_data[['StockCode', 'Quantity', 'CustomerID']]
+    
+    # Group together customers and purchases and replace 0's in quantity column to 1 
+    # and customers that didn't buy items
+    group_cleaned = cleaned_data.groupby(['CustomerID', 'StockCode']).sum().reset_index()
+    group_cleaned.Quantity.loc[group_cleaned.Quantity == 0] = 1
+    group_cleaned_purchased = group_cleaned.query('Quantity > 0')
+
+    print(group_cleaned_purchased.head())
+
+    # Create Sparse Ratings Matrix of Users and Items U*I
+    customers = list(np.sort(group_clean_purchased.CustomerID.unique()))
+    products = list(group_clean_purchased.StockCode.unique())
+    quantity = list(group_clean_purchased.Quantity)
+
+    # Get rows and columns to craete purchase sparse matrix
+    rows = grouped_purchased.CustomerID.astype('category', categories = customers).cat.codes 
+    cols = grouped_purchased.StockCode.astype('category', categories = products).cat.codes 
+    purchases_sparse = sparse.csr_matrix((quantity, (rows, cols)), shape=(len(customers), len(products)))
+    
+    return [item_table, purchases_sparse, customers, products, quantity]
+
+def split_data_mask(ratings, pct_test=0.2):
+    # 1. Make copy of original set to be test set
+    test_set = ratings.copy()
+    # 2. Store test set as binary preference matrix
+    test_set[test_set != 0] = 1
+    # 3. Make copy of original data to our training_set
+    training_set = ratings.copy()
+    # 4. Find indices where ratings data interaction exists, and zip these pairs together
+    nonzero_inds = training_set.nonzero()
+    nonzero_pairs = list(zip(nonzero_inds[0], nonzero_inds[1]))
+    random.seed(0)
+    num_samples = int(np.ceil(pct_test*len(nonzero_pairs)))
+    samples = random.sample(nonzero_pairs, num_samples)
+    
+    # Create user, item indices
+    user_inds = [index[0] for index in samples]
+    item_inds = [index[1] for index in samples]
+    training_set.eliminate_zeros()
+    
+    return [training_set, test_set, list(set(user_inds))]
+
+
+
+#
 # Splits up the preprocessed code into train/test/validation splits for recommender system
+#
 def split_data(df, status):
     start = time.time()
 
@@ -97,6 +176,10 @@ def split_data(df, status):
     # Pack data
     return [df_train, df_test, df_val]
 
+
+#
+# User Input Validation Functions
+#
 def validate_customer_id(customer_id):
     # Check if input is in range or is valid type
     if not (isinstance(customer_id, int) and customer_id >= 0 and customer_id <= 4338):
@@ -180,16 +263,55 @@ def customer_table():
     pickle.dump(customer_id_search, table_storage)
     table_storage.close()
 
+def get_items_purchased(customer_id, mf_train, customers_list, products_list, item_lookup):
+    cust_ind = np.where(customers_list == customer_id)[0][0] # Returns the index row of our customer id
+    purchased_ind = mf_train[cust_ind,:].nonzero()[1] # Get column indices of purchased items
+    prod_codes = products_list[purchased_ind] # Get the stock codes for our purchased items
+    return item_lookup.loc[item_lookup.StockCode.isin(prod_codes)]
+
 
 def main():
-    df = process_data(status=True)
-    table_file = open('../data/final/df_customer_table.pkl', "rb")
-    customer_table = pickle.load(table_file)
-    
+    # df = process_data(status=True)
+    # table_file = open('../data/final/df_customer_table.pkl', "rb")
+    # customer_table = pickle.load(table_file)
     # search_customer(3, df, customer_table)
+    # list_customers(10, df, customer_table)
+    
+    data = preprocess_data_rec_engine(status=False)
+
+    item_table = data[0]
+    p_sparse = data[1]
+    customers = data[2]
+    products = data[3]
+    quantity = data[4]
 
 
-    list_customers(10, df, customer_table)
+    tti = split_data_mask(p_sparse, pct_test = 0.2)
+    
+    product_training_set = tti[0]
+    product_test_set = tti[1]
+    product_user_altered = tti[2]
+
+    vecs = implicit_weighted_als(product_training_set, 
+                                 lambda_val = 0.1, 
+                                 alpha = 15, 
+                                 iterations = 1, 
+                                 rank_size = 20)
+    
+    # 
+    user_vecs = vecs[0]
+    item_vecs = vecs[1]
+
+    alpha = 15
+    customers_arr  = np.array(customers) # Array of customer IDs from the ratings matrix
+    products_arr = np.array(products) # Array of product IDs from the ratings matrix
+
+    print(get_items_purchased(12346, product_training_set, customers_arr, products_arr, item_table))
+
+    
+
+
+
 
 if __name__ == '__main__':
     main()
