@@ -29,7 +29,7 @@ def printRed(msg):
 #
 
 help_message = '''
-  🛍️ Machine Learning eCommerce Recommender System
+  Machine Learning eCommerce Recommender System
 
   Usage
     $ retailbox [<options> ...]
@@ -40,7 +40,7 @@ def displayHelpMessage():
     print(help_message)
 
 def displayVersion(version):
-    print('RetailBox' + version)
+    print('RetailBox ' + version)
 
 
 '''

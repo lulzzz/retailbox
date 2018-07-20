@@ -16,9 +16,6 @@ retailBoxVersion = '0.1.0'
 # Customer ID
 @click.option('-c', '--customer', default=1, help='Input customer ID')
 
-# Recommendations
-@click.option('-r', '--recommend', default=3, help='Number of customer item recommendations')
-
 # Customer Information
 @click.option('-i', '--info', is_flag=True, default=False, help="Display customer information")
 
@@ -38,7 +35,7 @@ retailBoxVersion = '0.1.0'
 @click.option('-l', '--list', is_flag=True, default=False, help='List customers')
 
 
-def main(customer, recommend, help, version, search, list, status, info):
+def main(customer, help, version, search, list, status, info):
     if (help):
         displayHelpMessage()
         sys.exit(0)
