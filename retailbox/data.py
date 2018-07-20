@@ -10,8 +10,10 @@ from scipy.sparse.linalg import spsolve
 import random
 import implicit
 
+from scipy.sparse.linalg import spsolve
 from output import printGreen, printRed, display_customer_information
 from implicit_als import implicit_weighted_als
+from sklearn.preprocessing import MinMaxScaler
 
 # Store CustomerIDs
 customer_id = {}
@@ -97,7 +99,6 @@ def process_data(status):
 # into the recommender system 
 #
 def preprocess_data_rec_engine(status):
-    
     # Load Data
     data = pd.read_excel('../data/raw/Online Retail.xlsx')
 
@@ -118,19 +119,19 @@ def preprocess_data_rec_engine(status):
     group_cleaned.Quantity.loc[group_cleaned.Quantity == 0] = 1
     group_cleaned_purchased = group_cleaned.query('Quantity > 0')
 
-    print(group_cleaned_purchased.head())
-
     # Create Sparse Ratings Matrix of Users and Items U*I
-    customers = list(np.sort(group_clean_purchased.CustomerID.unique()))
-    products = list(group_clean_purchased.StockCode.unique())
-    quantity = list(group_clean_purchased.Quantity)
+    customers = list(np.sort(group_cleaned_purchased.CustomerID.unique()))
+    products = list(group_cleaned_purchased.StockCode.unique())
+    quantity = list(group_cleaned_purchased.Quantity)
 
     # Get rows and columns to craete purchase sparse matrix
-    rows = grouped_purchased.CustomerID.astype('category', categories = customers).cat.codes 
-    cols = grouped_purchased.StockCode.astype('category', categories = products).cat.codes 
+    rows = group_cleaned_purchased.CustomerID.astype('category', categories = customers).cat.codes 
+    cols = group_cleaned_purchased.StockCode.astype('category', categories = products).cat.codes 
     purchases_sparse = sparse.csr_matrix((quantity, (rows, cols)), shape=(len(customers), len(products)))
     
+
     return [item_table, purchases_sparse, customers, products, quantity]
+
 
 def split_data_mask(ratings, pct_test=0.2):
     # 1. Make copy of original set to be test set
@@ -196,16 +197,9 @@ def validate_length(length):
         sys.exit(1)
     return 0
 
-def validate_recommendations(recommendations_number):
-    if not (isinstance(recommendations_number, int) and recommendations_number >= 1 and recommendations_number <= 5):
-        printRed('Invalid value for recommendations number: "' + str(recommendations_number) + '"')
-        printRed('Input is not a valid integer between [1, 5]')
-        sys.exit(1)
-    return 0
 
-def validate_input(customer_id, recommendations_number):
+def validate_input(customer_id):
     validate_customer_id(customer_id)
-    validate_recommendations(recommendations_number)
     return 0
 
 def search_customer(customer_id, df, table):
@@ -263,20 +257,62 @@ def customer_table():
     pickle.dump(customer_id_search, table_storage)
     table_storage.close()
 
+# Finds actual customer id from [0-4338] and finds mapping from table
+def lookup_customer_id(customer_id):
+    df = pd.read_pickle('../data/final/df_final.pkl') 
+    table_pickle_file = open('../data/final/df_customer_table.pkl', "rb")
+    customer_table = pickle.load(table_pickle_file)
+    table_pickle_file.close()
+
+    return customer_table[customer_id]
+    
+    
+#
+# Returns list of items purchased when given a Customer ID
+#
 def get_items_purchased(customer_id, mf_train, customers_list, products_list, item_lookup):
     cust_ind = np.where(customers_list == customer_id)[0][0] # Returns the index row of our customer id
     purchased_ind = mf_train[cust_ind,:].nonzero()[1] # Get column indices of purchased items
     prod_codes = products_list[purchased_ind] # Get the stock codes for our purchased items
     return item_lookup.loc[item_lookup.StockCode.isin(prod_codes)]
 
+#
+# Get recommendations for Customer (all of them)
+#
+def rec_items(customer_id, mf_train, user_vecs, item_vecs, customer_list, item_list, item_lookup, num_items = 10):
+    cust_ind = np.where(customer_list == customer_id)[0][0]
+    pref_vec = mf_train[cust_ind,:].toarray()
+    pref_vec = pref_vec.reshape(-1) + 1
+    pref_vec[pref_vec > 1] = 0
+    rec_vector = user_vecs[cust_ind,:].dot(item_vecs.T)
+
+    min_max = MinMaxScaler()
+    rec_vector_scaled = min_max.fit_transform(rec_vector.reshape(-1,1))[:,0] 
+    recommend_vector = pref_vec*rec_vector_scaled 
+
+    product_idx = np.argsort(recommend_vector)[::-1][:num_items]
+
+    rec_list = []
+    for index in product_idx:
+        code = item_list[index]
+        rec_list.append([code, item_lookup.Description.loc[item_lookup.StockCode == code].iloc[0]]) 
+        # Append our descriptions to the list
+
+    codes = [item[0] for item in rec_list]
+    descriptions = [item[1] for item in rec_list]
+    final_frame = pd.DataFrame({'StockCode': codes, 'Description': descriptions}) # Create a dataframe 
+    return final_frame[['StockCode', 'Description']] # Switch order of columns around
+
+def list_rec(rec_frame):
+    r = rec_frame['Description']
+    recs = []
+    for i in r:
+        i = i.lower()
+        i = i.title()
+        recs.append(i)
+    return recs
 
 def main():
-    # df = process_data(status=True)
-    # table_file = open('../data/final/df_customer_table.pkl', "rb")
-    # customer_table = pickle.load(table_file)
-    # search_customer(3, df, customer_table)
-    # list_customers(10, df, customer_table)
-    
     data = preprocess_data_rec_engine(status=False)
 
     item_table = data[0]
@@ -285,32 +321,41 @@ def main():
     products = data[3]
     quantity = data[4]
 
-
     tti = split_data_mask(p_sparse, pct_test = 0.2)
     
     product_training_set = tti[0]
     product_test_set = tti[1]
     product_user_altered = tti[2]
 
-    vecs = implicit_weighted_als(product_training_set, 
-                                 lambda_val = 0.1, 
-                                 alpha = 15, 
-                                 iterations = 1, 
-                                 rank_size = 20)
+    alpha = 15
     
-    # 
+    vecs = implicit.alternating_least_squares((product_training_set*alpha).astype('double'), 
+                                                            factors=20, 
+                                                            regularization = 0.1, 
+                                                            iterations = 50)
     user_vecs = vecs[0]
     item_vecs = vecs[1]
 
-    alpha = 15
     customers_arr  = np.array(customers) # Array of customer IDs from the ratings matrix
     products_arr = np.array(products) # Array of product IDs from the ratings matrix
 
+    rf = rec_items(12346, product_training_set, user_vecs, item_vecs, customers_arr, products_arr, item_table, num_items = 10)
+
     print(get_items_purchased(12346, product_training_set, customers_arr, products_arr, item_table))
-
+    print(rf)
     
+    l = list_rec(rf)
+    print(l)
 
+    print(lookup_customer_id(4338))
+    
+    # df = pd.read_pickle('../data/final/df_final.pkl')
+    # table_pickle_file = open('../data/final/df_customer_table.pkl', "rb")
+    # customer_table = pickle.load(table_pickle_file)
+    # table_pickle_file.close() 
+    # search_customer(3, df, customer_table)
 
+    print("Done")
 
 
 if __name__ == '__main__':

@@ -48,6 +48,10 @@ def implicit_weighted_als(training_set, lambda_val = 0.1, alpha = 40, iterations
             Y[i] = spsolve(xTx + xTCiIX + lambda_eye, xTCiPi)
     return [X, Y.T]
 
+#
+# 
+#
+
 def main():
     print("Hello")
 

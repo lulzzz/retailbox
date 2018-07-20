@@ -86,6 +86,14 @@ def display_customer_information(customer_id, country, items, amount_spent):
 
     return 0
 
+def display_recommender_items(recommended_items):
+    print('\n')
+    print(colored('❯ Recommended Items:', 'yellow'))
+    for i in recommended_items:
+        print(colored('  - ' + i, 'yellow'))
+    
+
+
 
 def display_performance():
     print(colored("★ Recommender System Methods & Performance", 'yellow'))
