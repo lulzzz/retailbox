@@ -22,8 +22,7 @@ from data import validate_customer_id, search_customer
 warnings.filterwarnings("ignore")
 
 
-def recommender(customer_id, 
-                status):
+def recommender(customer_id, status):
     # Start time
     start = time.time()
     if status:

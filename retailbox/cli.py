@@ -7,6 +7,7 @@ import pickle
 
 from output import displayHelpMessage, displayVersion
 from data import search_customer, list_customers
+from recommender import recommender
 
 retailBoxVersion = '0.1.0'
 
@@ -36,7 +37,8 @@ retailBoxVersion = '0.1.0'
 # List number of Customers
 @click.option('-l', '--list', is_flag=True, default=False, help='List customers')
 
-def main(customer, recommend, customer_information, help, version, search, list):
+
+def main(customer, recommend, help, version, search, list, status, info):
     if (help):
         displayHelpMessage()
         sys.exit(0)
@@ -62,9 +64,8 @@ def main(customer, recommend, customer_information, help, version, search, list)
                     list_customers(list_length, df, customer_table)
 
                 else:
-                    # Train a recommender system using [algo] and display recommendations
-                    # recommender(...)
-                    print("hello")
+                    # Train a recommender system and return recommendations
+                    recommender(customer, status=True)
 
 if __name__ == '__main__':
     main()
