@@ -62,6 +62,18 @@ $ moviebox --help
 
 ## Usage
 
+```
+from retailbox.recommender import recommender
+
+customer = 2874  # Customer ID
+status = True   # Display status information of program while running
+
+# Generate recommendations
+recommender(
+    customer_id=customer,
+    status=status)
+
+```
 
 ## References
 

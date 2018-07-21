@@ -11,6 +11,7 @@ notebooks_test
 build
 *.pyc
 __pycache__
+dist
 *.egg-info
 
 # Dependencies
