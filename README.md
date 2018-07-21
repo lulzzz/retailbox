@@ -35,7 +35,7 @@ pip install retailbox
 ## CLI
 
 ```
-$ moviebox --help
+$ retailbox --help
 
   🛍️ Machine Learning eCommerce Recommender System
 
