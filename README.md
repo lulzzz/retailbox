@@ -8,47 +8,15 @@
 
 ## Overview
 
-RetailBox is a recommender system that uses machine learning to make recommendations based off of a user's past purchase history. This project was inspired by Amazon and their recommender system techology.
+RetailBox is a recommender system that uses machine learning to make recommendations based off of a user's past purchase history. This project was inspired by Amazon and their recommender system techology. In this system we use Collaborative Filtering based off of implicit user data.
 
 ## Dataset
 
-The dataset we used is the [UCI Online Retail Dataset](http://archive.ics.uci.edu/ml/datasets/online+retail). This dataset has 25900 transactions, with each transaction containing 20 features, and these transactions were made by 4,300 users.
-
-Here are the features of the dataset:
-
-* Invoice No
-* Stock Code
-* Description
-* Quantity
-* UnitPrice
-* CustomerID
-* Country
+The dataset we used is the [UCI Online Retail Dataset](http://archive.ics.uci.edu/ml/datasets/online+retail). This dataset has 25900 transactions, with each transaction containing 20 features and these transactions were made by 4,300 users.
 
 ## Training/Test Split
 
 The way we split the data was by time. In this scenario, our system makes recommendations based on implicit user data from the past so this is how we split our data.
-
-## Algorithms Used
-
-* Matrix Factorization
-* Recurrent Neural Networks
-
-## Performance Measures
-
-We set a baseline measurement for our recommender system, and then compared it to a recommender system that used matrix factorization and RNNs.
-
-Baseline
-ALS
-SGD Matrix Factorization using Log Loss Objective Function
-SGD Matrix Factorization using BPR Objective Function
-Recurrent Neural Network
-
-
-## Challenge and Workarounds
-
-* Dataset had several rows of a single transactions
-* We don't know what the user doesn't like.
-* Matrix Factorization does not take
 
 ## Context of Recommendation Scenario
 
@@ -60,16 +28,39 @@ In this recommender system, the context we used can be seen by the diagram below
 
 ## Installation
 
+```
+pip install retailbox
+```
+
 ## CLI
 
+```
+$ moviebox --help
+
+  🛍️ Machine Learning eCommerce Recommender System
+
+  Usage
+    $ retailbox [<options> ...]
+
+  Options
+    --help, -h                Display help message
+    --search, -s              Search customer by ID [Can be any integer 0-4338]
+    --customer, -c <int>      Input customer ID [Can be any integer 0-4338]
+    --info, -i                Display customer information
+    --status, -s              Display process info
+    --list, -l                List available customer IDs
+    --version, -v             Display installed version
+
+  Examples
+    $ retailbox --help
+    $ retailbox --search
+    $ retailbox --customer 1028
+    $ retailbox -c 1028
+    $ retailbox -m 1028 --info
+    $ retailbox -m 1028 -i --status
+```
 
 ## Usage
-
-## API
-
-## Tools Used
-
-* Tensorflow
 
 
 ## References

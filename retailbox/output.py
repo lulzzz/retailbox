@@ -29,11 +29,27 @@ def printRed(msg):
 #
 
 help_message = '''
-  Machine Learning eCommerce Recommender System
+  🛍️ Machine Learning eCommerce Recommender System
 
   Usage
     $ retailbox [<options> ...]
 
+  Options
+    --help, -h                Display help message
+    --search, -s              Search customer by ID [Can be any integer 0-4338]
+    --customer, -c <int>      Input customer ID [Can be any integer 0-4338]
+    --info, -i                Display customer information
+    --status, -s              Display process info
+    --list, -l                List available customer IDs
+    --version, -v             Display installed version
+
+  Examples
+    $ retailbox --help
+    $ retailbox --search
+    $ retailbox --customer 1028
+    $ retailbox -c 1028
+    $ retailbox -m 1028 --info
+    $ retailbox -m 1028 -i --status
 '''
 
 def displayHelpMessage():
@@ -91,10 +107,3 @@ def display_recommender_items(recommended_items):
     print(colored('❯ Recommended Items:', 'yellow'))
     for i in recommended_items:
         print(colored('  - ' + i, 'yellow'))
-    
-
-
-
-def display_performance():
-    print(colored("★ Recommender System Methods & Performance", 'yellow'))
-    # Baseline, ALS, SGD-MF-LogLoss, SGD-MF-BPR, RNN
