@@ -10,6 +10,10 @@
 
 RetailBox is a recommender system that uses machine learning to make recommendations based off of a user's past purchase history. This project was inspired by Amazon and their recommender system techology. In this system we use Collaborative Filtering based off of implicit user data.
 
+<div align="center">
+  <img src="https://i.imgur.com/tBDRbBD.png" width="20%">
+</div>
+
 ## Dataset
 
 The dataset we used is the [UCI Online Retail Dataset](http://archive.ics.uci.edu/ml/datasets/online+retail). This dataset has 25900 transactions, with each transaction containing 20 features and these transactions were made by 4,300 users.
